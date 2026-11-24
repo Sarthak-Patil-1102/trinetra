@@ -3,6 +3,7 @@ ChaiCart — a DELIBERATELY VULNERABLE demo shop for testing Trinetra.
 DO NOT deploy. Every VULN comment marks a planted flaw Trinetra must find.
 """
 import base64
+import hashlib
 import os
 import pickle
 import sqlite3
@@ -209,6 +210,17 @@ def reset_pw():
     host = request.headers.get("Host", "")
     # VULN (host-header): the reset link is built from the client-controlled Host header
     return jsonify(reset_link=f"http://{host}/reset/confirm?token=abc123")
+
+
+@app.route("/.env")
+def dotenv():
+    # VULN (exposed-config): the .env file is served over HTTP
+    return "SECRET_KEY=sk_live_hardcoded_dev_key_do_not_ship_12345\nDB_URL=sqlite:///chaicart.db\n"
+
+
+def _hash_pw(pw):
+    # VULN (weak-hash): md5 is far too fast/weak for password hashing
+    return hashlib.md5(pw.encode()).hexdigest()
 
 
 def _load_state(blob):

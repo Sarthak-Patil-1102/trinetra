@@ -265,6 +265,10 @@ gives a better screenshot).
   full end-to-end verification pass. BUILD COMPLETE — usable v1 (M2).
 
 ### Extras (post-core)
+- **Data/AI-app family ✅** +3 code astras (C08 unverified TLS, C09 incomplete
+  PII redaction, C10 silent except:pass) → **29 astras**. Gives Trinetra real
+  signal on non-web apps. Tested on a real external Streamlit repo: correctly
+  found one honest MEDIUM (incomplete PII redaction), 90/100.
 - **Brains ✅** Pluggable registry (`--brain template|ollama|claude`). Ollama +
   Claude brains fully wired (real HTTP; run on the user's machine, not this
   sandbox). Brains draft from freeform disclosure text, not just structured

@@ -34,6 +34,7 @@ remembers it, and keeps itself current.
 - **AI-specific** — prompt injection on naive LLM endpoints (the kind vibe coders add without guards)
 - **Secrets & unsafe code** — hardcoded keys, debug mode, string-built SQL, `eval`, insecure deserialization (`pickle`), keys leaked into the JS bundle / `.env`
 - **Auth weakness** — no rate limiting
+- **Data/AI-app hygiene** — incomplete PII redaction (regex that misses Aadhaar/PAN/card/name), unverified TLS, silent exception swallowing
 
 …and it grows more over time through the third eye.
 
