@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Trinetra / demo runtime
+*.db
+targets/chaicart/chaicart.db
+.trinetra/cache/
+/tmp/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Never commit real secrets (ChaiCart's are fake demo values, kept on purpose)
+.env
+*.key

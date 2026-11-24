@@ -1,0 +1,41 @@
+[
+  {
+    "id": "FEED-2026-SSTI",
+    "title": "Server-Side Template Injection in Flask render_template_string",
+    "stack": ["flask", "jinja2"],
+    "severity": "CRITICAL",
+    "cwe": "CWE-1336",
+    "astra": {
+      "id": "A09",
+      "name": "Server-Side Template Injection (SSTI)",
+      "endpoints": ["/greet", "/hello", "/welcome"],
+      "param": "name",
+      "payload": "{{7*7}}",
+      "expect_contains": "49",
+      "fix": "Never render user input as a template. Pass it as data to a static template with autoescaping."
+    }
+  },
+  {
+    "id": "FEED-2026-WPUPLOAD",
+    "title": "Arbitrary file upload in a WordPress PHP plugin",
+    "stack": ["php", "wordpress"],
+    "severity": "HIGH",
+    "cwe": "CWE-434",
+    "astra": {
+      "id": "A50", "name": "WP plugin arbitrary upload",
+      "endpoints": ["/wp-upload"], "param": "f", "payload": "x",
+      "expect_contains": "ok", "fix": "n/a"
+    }
+  },
+  {
+    "id": "FEED-2026-SQLI",
+    "title": "SQL injection in a login form (technique already covered)",
+    "stack": ["flask"],
+    "severity": "CRITICAL",
+    "cwe": "CWE-89",
+    "astra": {
+      "id": "A01", "name": "SQL injection", "endpoints": ["/login"],
+      "param": "u", "payload": "x", "expect_contains": "x", "fix": "n/a"
+    }
+  }
+]
