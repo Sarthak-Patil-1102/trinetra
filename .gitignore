@@ -18,3 +18,4 @@ targets/chaicart/chaicart.db
 # Never commit real secrets (ChaiCart's are fake demo values, kept on purpose)
 .env
 *.key
+uploads/

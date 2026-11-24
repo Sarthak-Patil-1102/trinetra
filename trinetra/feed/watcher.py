@@ -36,7 +36,11 @@ def run_feed(stack=("flask", "jinja2"), brain=None, feed_path=FEED):
         if aid in known:
             results.append((e["id"], aid, f"skipped — {aid} already covered"))
             continue
-        src = brain.draft_astra(e)
+        try:
+            src = brain.draft_astra(e)
+        except Exception as ex:  # a brain (e.g. a model that's offline) must not crash the feed
+            results.append((e["id"], aid, f"error — brain '{getattr(brain, 'name', '?')}' failed: {ex}"))
+            continue
         slug = e["astra"]["name"].split("(")[0].strip().lower().split()[0]
         fn = f"{aid.lower()}_{slug}.py"
         with open(os.path.join(PENDING, fn), "w") as fh:

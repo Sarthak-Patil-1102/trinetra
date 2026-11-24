@@ -1,7 +1,7 @@
 """Helpers for the code-reading eye: walk a source tree, read files safely."""
 import os
 
-SKIP_DIRS = {".git", "__pycache__", ".venv", "venv", "node_modules", ".trinetra", "dist", "build"}
+SKIP_DIRS = {".git", "__pycache__", ".venv", "venv", "node_modules", ".trinetra", "dist", "build", "uploads"}
 
 
 def walk_code(root, exts=(".py",)):

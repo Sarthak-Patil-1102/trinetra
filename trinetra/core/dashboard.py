@@ -1,4 +1,8 @@
-"""Build the 'see everything' HTML dashboard: score, findings, astra library, third eye."""
+"""Build the 'see everything' dashboard: score, findings, astra library, third eye.
+
+render() returns the HTML string; build() writes it to a file; the server in
+server.py calls render(serve=True) to add a live Re-scan button.
+"""
 import html
 
 HEX = {"CRITICAL": "#e5484d", "HIGH": "#f5a623", "MEDIUM": "#4c82f7", "LOW": "#8a8f98"}
@@ -32,7 +36,7 @@ def _astra_chips(astras, learned_ids):
     return "\n".join(out)
 
 
-def build(findings, score, target, astras, learned_ids, pending, path):
+def render(findings, score, target, astras, learned_ids, pending, serve=False):
     band = HEX["CRITICAL"] if score < 40 else ("#f5a623" if score < 70 else "#30a46c")
     n_attack = sum(1 for a in astras if getattr(a, "EYE", "attack") == "attack")
     n_code = sum(1 for a in astras if getattr(a, "EYE", "attack") == "code")
@@ -40,7 +44,11 @@ def build(findings, score, target, astras, learned_ids, pending, path):
         "".join(f'<li>{html.escape(p)} <span class="pend">pending review</span></li>' for p in pending)
         if pending else '<li class="muted">nothing pending — the library is up to date</li>'
     )
-    doc = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+    rescan = (
+        '<form method="post" action="/rescan" style="margin-left:14px">'
+        '<button class="rescan">↻ Re-scan</button></form>' if serve else ""
+    )
+    return f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trinetra dashboard</title><style>
  body{{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#0d0f13;color:#e6e8eb}}
@@ -49,6 +57,7 @@ def build(findings, score, target, astras, learned_ids, pending, path):
  .eye{{font-size:38px}} h1{{margin:0;font-size:20px}} .sub{{color:#9aa0a6;font-size:13px}}
  .score{{margin-left:auto;text-align:center}} .ring{{font-size:36px;font-weight:800;color:{band}}}
  .lbl{{font-size:10px;color:#9aa0a6;letter-spacing:.1em}}
+ .rescan{{background:#2b6cb0;color:#fff;border:0;border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer}}
  .kpis{{display:flex;gap:12px;margin:18px 0}}
  .kpi{{flex:1;background:#141820;border:1px solid #22262e;border-radius:10px;padding:12px 14px}}
  .kpi b{{font-size:22px}} .kpi div{{color:#9aa0a6;font-size:12px}}
@@ -69,7 +78,7 @@ def build(findings, score, target, astras, learned_ids, pending, path):
  footer{{margin-top:26px;color:#6b7280;font-size:12px;border-top:1px solid #22262e;padding-top:14px}}
 </style></head><body><div class="wrap">
  <header><div class="eye">👁</div><div><h1>Trinetra — control plane</h1>
-   <div class="sub">target: {html.escape(target)}</div></div>
+   <div class="sub">target: {html.escape(target)}</div></div>{rescan}
    <div class="score"><div class="ring">{score}</div><div class="lbl">SAFETY / 100</div></div></header>
  <div class="kpis">
    <div class="kpi"><b>{len(findings)}</b><div>vulnerabilities proven</div></div>
@@ -82,6 +91,9 @@ def build(findings, score, target, astras, learned_ids, pending, path):
  <footer>Trinetra — a self-updating immune system for code. Findings are proven, not guessed.
  Responsible use: run only against targets you own or have permission to test.</footer>
 </div></body></html>"""
+
+
+def build(findings, score, target, astras, learned_ids, pending, path):
     with open(path, "w") as fh:
-        fh.write(doc)
+        fh.write(render(findings, score, target, astras, learned_ids, pending))
     return path

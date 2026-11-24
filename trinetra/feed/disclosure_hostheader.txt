@@ -1,0 +1,9 @@
+Freeform security disclosure (the kind a real brain reads):
+
+"Host Header Injection in password reset. The application builds the password-reset
+URL using the incoming HTTP Host header without validating it against an allow-list.
+An attacker sends a reset request with a forged header, e.g. `Host: evil.example.com`.
+The generated reset link (returned by GET /reset, and normally emailed to the user)
+then points at the attacker's domain, so when the victim clicks it their reset token
+is sent to the attacker. Classic account-takeover primitive. CWE-20 / CWE-644.
+Fix: never trust the Host header; use a configured canonical domain for links."

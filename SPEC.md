@@ -262,5 +262,36 @@ gives a better screenshot).
   feed watcher with stack-filter + dedup, `feed`/`review` approve flow. Learned
   an SSTI astra from a disclosure and caught it on ChaiCart (12→13 astras).
 - **P5 ✅** HTML dashboard (`dashboard`), README, LICENSE, requirements.txt,
-  full end-to-end verification pass (all commands green; 13 astras load).
-  BUILD COMPLETE — usable v1 (M2).
+  full end-to-end verification pass. BUILD COMPLETE — usable v1 (M2).
+
+### Extras (post-core)
+- **Brains ✅** Pluggable registry (`--brain template|ollama|claude`). Ollama +
+  Claude brains fully wired (real HTTP; run on the user's machine, not this
+  sandbox). Brains draft from freeform disclosure text, not just structured
+  entries. Added `validate` — sandbox-tests a drafted astra before approval.
+  Proven end-to-end: a freeform host-header-injection disclosure → drafted A19 →
+  validated → approved → caught (26 astras).
+- **More attacks ✅** +6 astras (upload, open redirect, missing headers, SSRF,
+  coupon reuse, asset-secret) → 19 astras. Then a 2nd family (+6): CORS, path
+  traversal, verbose errors, **prompt injection (AI)**, insecure deserialization,
+  permissive-CORS-in-source → **25 astras, 24 proven** on ChaiCart.
+- **Personalized wall ✅** `fingerprint` + `arm` now detects stack (flask vs
+  streamlit etc.), stores a profile, warns when the attack eye won't apply, and
+  `feed --repo` uses the detected stack.
+- **Live dashboard ✅** `dashboard --serve` runs a local web server with a
+  Re-scan button (verified over HTTP).
+- **Docs ✅** `docs/WRITEUP.md` — full technical write-up + Mermaid architecture
+  diagram (doubles as the M3 blog post).
+- **Brain registry ✅** `trinetra/brain/registry.py` — pluggable brains with a
+  marked "ADD A NEW BRAIN HERE" block; `feed --brain <name>`; offline brains
+  degrade gracefully. Ollama wiring intentionally DEFERRED (slot reserved); a
+  real local-model / Claude brain can be dropped in later with one line.
+
+### Backlog (next features, pick as we go)
+- Make the "16 starter astras" claim real: currently 9 attack + 4 code = 13.
+  Add e.g. unrestricted upload, open redirect, missing security headers, SSRF.
+- Personalized `arm`: auto-fingerprint a repo's stack → profile → run only
+  relevant astras (the "personalized wall").
+- Contain-and-escalate (§5c) + brain-generated fixes for the user's real code.
+- Live-served dashboard (`dashboard --serve`).
+- Finish the Ollama brain (deferred) when wanted.
